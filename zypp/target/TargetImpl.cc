@@ -669,18 +669,10 @@ namespace zypp
     /**
      * generates an uuid using the kernel random interface.
      */
-    static string generateRandomId()
+    static std::string generateRandomId()
     {
-      ifstream uuidprovider("/proc/sys/kernel/random/uuid");
-      stringstream uuidbuffer;
-
-      if( uuidprovider.is_open() )
-      {
-          uuidbuffer << uuidprovider.rdbuf();
-          uuidprovider.close();
-          return uuidbuffer.str();
-      }
-        return std::string();
+      std::ifstream uuidprovider( "/proc/sys/kernel/random/uuid" );
+      return iostr::getline( uuidprovider );
     }
 
     /**

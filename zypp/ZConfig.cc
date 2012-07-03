@@ -127,6 +127,22 @@ namespace zypp
           ERR << "Cant open " << PathInfo("/proc/cpuinfo") << endl;
         }
       }
+      else if ( architecture == Arch_armv7l)
+      {
+	std::ifstream platform( "/etc/rpm/platform" );
+	if (platform)
+	{
+	  for( iostr::EachLine in( platform ); in; in.next() )
+	  {
+	    if ( str::hasPrefix( *in, "armv7hl-" ) )
+	    {
+	      architecture = Arch_armv7hl;
+	      WAR << "/etc/rpm/platform contains armv7hl-: architecture upgraded to '" << architecture << "'" << endl;
+	      break;
+	    }
+	  }
+	}
+      }
       return architecture;
     }
 
@@ -731,7 +747,7 @@ namespace zypp
   Pathname ZConfig::knownServicesPath() const
   {
     return ( _pimpl->cfg_known_services_path.empty()
-        ? (configPath()/"services.d") : _pimpl->cfg_known_repos_path );
+        ? (configPath()/"services.d") : _pimpl->cfg_known_services_path );
   }
 
   Pathname ZConfig::vendorPath() const
